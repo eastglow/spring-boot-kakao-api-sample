@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.eastglow.dao.SearchMapper">
+
+	<select id="selectHistoryList" parameterType="int" resultType="searchVO">
+		SELECT KEYWORD_NM, REG_DATE, TO_CHAR(REG_DATE, 'YYYY-MM-DD HH:MI') CONVERT_REG_DATE
+		FROM TBL_HISTORY
+		WHERE USER_PKID = #{value}
+		ORDER BY REG_DATE DESC
+		LIMIT 10
+	</select>
+
+	<select id="selectTopKeywordList" resultType="searchVO">
+		SELECT KEYWORD_NM, KEYWORD_CNT
+		FROM TBL_KEYWORD
+		ORDER BY KEYWORD_CNT DESC
+		LIMIT 10
+	</select>
+
+	<insert id="insertHistory" parameterType="searchVO">
+		INSERT INTO TBL_HISTORY(USER_PKID, KEYWORD_NM, REG_DATE)
+		VALUES (#{userPkid}, #{keywordNm}, CURRENT_TIMESTAMP())
+	</insert>
+
+	<select id="selectKeywordCnt" resultType="int" parameterType="String">
+		SELECT COUNT(1)
+		FROM TBL_KEYWORD
+		WHERE KEYWORD_NM = #{value}
+	</select>
+
+	<insert id="insertKeyword" parameterType="String">
+		INSERT INTO TBL_KEYWORD(KEYWORD_NM, KEYWORD_CNT)
+		VALUES (#{value}, 1)
+	</insert>
+
+	<update id="updateKeywordCnt" parameterType="String">
+		UPDATE TBL_KEYWORD
+		SET KEYWORD_CNT = KEYWORD_CNT + 1
+		WHERE KEYWORD_NM = #{value}
+	</update>
+</mapper>
